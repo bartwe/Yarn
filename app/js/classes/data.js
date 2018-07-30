@@ -120,10 +120,16 @@ var data =
 		var objects = [];
 		var i = 0;
 		if (type == FILETYPE.JSON)
-		{
+		{	
 			content = JSON.parse(content);
-			for (i = 0; i < content.length; i ++)
+			for (i = 0; i < content.length; i ++){
+				if(content[i].body instanceof Array){ //new ver
+					content[i].body = content[i].body.join('\n');
+				}
+
 				objects.push(content[i]);
+			}
+			
 		}
 		else if (type == FILETYPE.YARNTEXT)
 		{
@@ -313,76 +319,90 @@ var data =
 		var content = [];
 		var nodes = app.nodes();
 
-		for (var i = 0; i < nodes.length; i ++)
-		{
-			content.push({
-				"title": nodes[i].title(), 
-				"tags": nodes[i].tags(), 
-				"body": nodes[i].body(),
-				"position": { "x": nodes[i].x(), "y": nodes[i].y() },
-				"colorID": nodes[i].colorID()
-			});
-		}
-
 		if (type == FILETYPE.JSON)
-		{
+		{	
+			content["version"] = 2;
+			for (var i = 0; i < nodes.length; i ++)
+			{
+				content.push({
+					"title": nodes[i].title(), 
+					"tags": nodes[i].tags(), 
+					"body": nodes[i].body().split('\n'),
+					"position": { "x": nodes[i].x(), "y": nodes[i].y() },
+					"colorID": nodes[i].colorID()
+				});
+			}
+			
 			output = JSON.stringify(content, null, "\t");
 		}
-		else if (type == FILETYPE.YARNTEXT)
-		{
-			for (i = 0; i < content.length; i++)
+		else{
+			for (var i = 0; i < nodes.length; i ++)
 			{
-				output += "title: " + content[i].title + "\n";
-				output += "tags: " + content[i].tags + "\n";
-				output += "colorID: " + content[i].colorID + "\n";
-				output += "position: " + content[i].position.x + "," + content[i].position.y + "\n";
-				output += "---\n";
-				output += content[i].body;
-				var body = content[i].body
-				if (!(body.length > 0 && body[body.length-1] == '\n'))
+				content.push({
+					"title": nodes[i].title(), 
+					"tags": nodes[i].tags(), 
+					"body": nodes[i].body(),
+					"position": { "x": nodes[i].x(), "y": nodes[i].y() },
+					"colorID": nodes[i].colorID()
+				});
+			}
+		
+			if (type == FILETYPE.YARNTEXT)
+			{
+				for (i = 0; i < content.length; i++)
 				{
-					output += "\n";
+					output += "title: " + content[i].title + "\n";
+					output += "tags: " + content[i].tags + "\n";
+					output += "colorID: " + content[i].colorID + "\n";
+					output += "position: " + content[i].position.x + "," + content[i].position.y + "\n";
+					output += "---\n";
+					output += content[i].body;
+					var body = content[i].body
+					if (!(body.length > 0 && body[body.length-1] == '\n'))
+					{
+						output += "\n";
+					}
+					output += "===\n";
 				}
-				output += "===\n";
 			}
-		}
-		else if (type == FILETYPE.TWEE)
-		{
-			for (i = 0; i < content.length; i ++)
+			else if (type == FILETYPE.TWEE)
 			{
-				var tags = "";
-				if (content[i].tags.length > 0)
-					tags = " [" + content[i].tags + "]"
-				output += ":: " + content[i].title + tags + "\n";
-				output += content[i].body + "\n\n";
+				for (i = 0; i < content.length; i ++)
+				{
+					var tags = "";
+					if (content[i].tags.length > 0)
+						tags = " [" + content[i].tags + "]"
+					output += ":: " + content[i].title + tags + "\n";
+					output += content[i].body + "\n\n";
+				}
 			}
-		}
-        else if (type == FILETYPE.TWEE2)
-        {
-            for (i = 0; i < content.length; i ++)
-            {
-                var tags = "";
-                if (content[i].tags.length > 0)
-                    tags = " [" + content[i].tags + "]"
-				var position = " <" + content[i].position.x + "," + content[i].position.y + ">";
-                output += ":: " + content[i].title + tags + position + "\n";
-                output += content[i].body + "\n\n";
-            }
-        }
-		else if (type == FILETYPE.XML)
-		{
-			output += '<nodes>\n';
-			for (i = 0; i < content.length; i ++)
+			else if (type == FILETYPE.TWEE2)
 			{
-				output += "\t<node>\n";
-				output += "\t\t<title>" + content[i].title + "</title>\n";
-				output += "\t\t<tags>" + content[i].tags + "</tags>\n";
-				output += "\t\t<body>" + content[i].body + "</body>\n";
-				output += '\t\t<position x="' + content[i].position.x + '" y="' + content[i].position.y + '"></position>\n';
-				output += '\t\t<colorID>' + content[i].colorID + '</colorID>\n';
-				output += "\t</node>\n";
+				for (i = 0; i < content.length; i ++)
+				{
+					var tags = "";
+					if (content[i].tags.length > 0)
+						tags = " [" + content[i].tags + "]"
+					var position = " <" + content[i].position.x + "," + content[i].position.y + ">";
+					output += ":: " + content[i].title + tags + position + "\n";
+					output += content[i].body + "\n\n";
+				}
 			}
-			output += '</nodes>\n';
+			else if (type == FILETYPE.XML)
+			{
+				output += '<nodes>\n';
+				for (i = 0; i < content.length; i ++)
+				{
+					output += "\t<node>\n";
+					output += "\t\t<title>" + content[i].title + "</title>\n";
+					output += "\t\t<tags>" + content[i].tags + "</tags>\n";
+					output += "\t\t<body>" + content[i].body + "</body>\n";
+					output += '\t\t<position x="' + content[i].position.x + '" y="' + content[i].position.y + '"></position>\n';
+					output += '\t\t<colorID>' + content[i].colorID + '</colorID>\n';
+					output += "\t</node>\n";
+				}
+				output += '</nodes>\n';
+			}
 		}
 
 		return output;

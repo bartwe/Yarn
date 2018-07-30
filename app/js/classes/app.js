@@ -365,11 +365,11 @@ var App = function(name, version)
                 if (e.shiftKey) {
                     switch(e.keyCode)
                     {
-                        case 83: 
+                        case 83:  //s
                             data.trySave(FILETYPE.JSON);
                             self.fileKeyPressed = true;
                         break;
-                        case 65:
+                        case 65: //a
                             data.tryAppend();
                             self.fileKeyPressed = true;
                         break;
