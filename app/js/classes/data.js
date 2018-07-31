@@ -321,29 +321,28 @@ var data =
 
 		if (type == FILETYPE.JSON)
 		{	
-			content["version"] = 2;
 			for (var i = 0; i < nodes.length; i ++)
 			{
 				content.push({
 					"title": nodes[i].title(), 
-					"tags": nodes[i].tags(), 
 					"body": nodes[i].body().split('\n'),
-					"position": { "x": nodes[i].x(), "y": nodes[i].y() },
-					"colorID": nodes[i].colorID()
+					"tags": nodes[i].tags(), 
+					"colorID": nodes[i].colorID(),
+					"position": { "x": nodes[i].x(), "y": nodes[i].y() }
 				});
 			}
 			
-			output = JSON.stringify(content, null, "\t");
+			output = JSON.stringify(content, null, "  ");
 		}
 		else{
 			for (var i = 0; i < nodes.length; i ++)
 			{
 				content.push({
 					"title": nodes[i].title(), 
-					"tags": nodes[i].tags(), 
 					"body": nodes[i].body(),
-					"position": { "x": nodes[i].x(), "y": nodes[i].y() },
-					"colorID": nodes[i].colorID()
+					"tags": nodes[i].tags(), 
+					"colorID": nodes[i].colorID(),
+					"position": { "x": nodes[i].x(), "y": nodes[i].y() }
 				});
 			}
 		
