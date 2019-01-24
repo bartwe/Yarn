@@ -325,7 +325,7 @@ var data =
 			{
 				content.push({
 					"title": nodes[i].title(), 
-					"body": nodes[i].body().split('\n'),
+					"body": nodes[i].body().replace(/\r/g, '').split('\n'),
 					"tags": nodes[i].tags(), 
 					"colorID": nodes[i].colorID(),
 					"position": { "x": nodes[i].x(), "y": nodes[i].y() }
